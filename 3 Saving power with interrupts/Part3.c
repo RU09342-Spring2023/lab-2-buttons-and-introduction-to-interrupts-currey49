@@ -1,70 +1,76 @@
+/*
+ *  Pull-Up Resistor Configuration
+ *
+ *  Created on: Feb 2, 2023
+ *  *      Author: Matthew Currey
+ *      Version: 1.0
+ *
+ *      This example will show you how to configure the Pull-up Resistor for your button inputs.
+ *
+ *      You can comment out specific lines of code to determine the effect of the pull-up resistors on the button performance.
+ *
+ *      You should also notice a distinct delay between the button being pressed and the LED blinking
  */
-//*  Created on: Feb 2, 2023
-//*  *      Author: Matthew Currey
-//*      Version: 1.0
+
 #include <msp430.h>
 
+void gpioInit();
 
-void runCodeWithSoftwarePolling();
-void runCodeWithInterrupts();
-
-int main(){
-
+/**
+ * main.c
+ */
+int main(void)
+{
     WDTCTL = WDTPW | WDTHOLD;   // stop watchdog timer
 
-    runCodeWithSoftwarePolling();
+    gpioInit();                 // Initialize all GPIO Pins for the project
 
-    //runCodeWithInterrupts();
+
+    PM5CTL0 &= ~LOCKLPM5;                   // Disable the GPIO power-on default high-impedance mode
+                                            // to activate previously configured port settings
+P1OUT &= ~BIT0;
+P6OUT &= ~BIT6;
+
+    while(1)
+    {
+
+        if (!(P2IN & BIT3))            // If S2 (P2.3) is pressed
+        {
+            P6OUT ^= BIT6;          // Toggle P6.6
+        }
+        if (!(P4IN & BIT1))            // If S1 (P4.1) is pressed
+        {
+            P1OUT ^= BIT0;          // Toggle P1.0
+        }
+        __delay_cycles(100000);             // Delay for 100000*(1/MCLK)=0.1s
+
+    }
+
 
     return 0;
 }
 
-void runCodeWithSoftwarePolling(){
-
-    P6DIR |= BIT6;              // Configure P6.6 to an Output
-    P2DIR &= ~BIT3;             // Configure P2.3 to an Input
-
-    P2REN |= BIT3;               // Enable Resistor on P2.3
-    P2OUT |= BIT3;               // Configure Resistor on P2.3 to be Pullup
-
-    PM5CTL0 &= ~LOCKLPM5;                   // Disable the GPIO power-on default high-impedance mode
-                                            // to activate previously configured port settings
-
-    while(1){
-        if(P2IN & BIT3)
-            P6OUT |= BIT6;
-        else
-            P6OUT &= ~BIT6;
-    }
-}
-
-void runCodeWithInterrupts(){
-
-    P6DIR |= BIT6;              // Configure P6.6 to an Output
-    P2DIR &= ~BIT3;             // Configure P2.3 to an Input
-
-    P2REN |= BIT3;               // Enable Resistor on P2.3
-    P2OUT |= BIT3;               // Configure Resistor on P2.3 to be Pullup
-
-    P2REN |= BIT3;                          // P2.3 pull-up register enable
-    P2IES &= ~BIT3;                         // P2.3 Low --> High edge
-    P2IE |= BIT3;                           // P2.3 interrupt enabled
-
-    PM5CTL0 &= ~LOCKLPM5;                   // Disable the GPIO power-on default high-impedance mode
-                                            // to activate previously configured port settings
-
-    while(1){
-        __bis_SR_register(LPM3_bits | GIE); // Enter LPM3 w/interrupt
-        __no_operation();                   // For debug
-        P6OUT ^= BIT6;                      // P6.6 = toggle
-    }
-}
-
-// Port 2 interrupt service routine
-#pragma vector=PORT2_VECTOR
-__interrupt void Port_2(void)
+void gpioInit()
 {
-    P2IFG &= ~BIT3;                         // Clear P1.3 IFG
-    P2IES ^= BIT3;                          // Transition the Edge Type (Low --> High, or High --> Low)
-    __bic_SR_register_on_exit(LPM3_bits);   // Exit LPM3
+   // Setting Directions of Pins
+
+       P1DIR |= BIT0;              // Configure P1.0 to an Output
+       P6DIR |= BIT6;              // Configure P6.6 to an Output
+       P2DIR &= ~BIT3;             // Configure P2.3 to an Input
+       P4DIR &= ~BIT1;             // Configure P4.1 to an Input
+
+   // Configuring Pullup Resistors per MSP430FR2355 Family User Guide
+   /*
+    *   PXDIR | PXREN | PXOUT | I/O Configuration
+    *     0       0       X     Input
+    *     0       1       0     Input with Pull Down Resistor
+    *     0       1       1     Input With Pull Up Resistor
+    *     1       X       X     Output
+    */
+
+       P2REN |= BIT3;               // Enable Resistor on P2.3
+       P2OUT |= BIT3;               // Configure Resistor on P2.3 to be Pullup
+
+       P4REN |= BIT1;               // Enable Resistor on P4.1
+       P4OUT |= BIT1;               // Configure Resistor on P4.1 to be Pullup
 }
