@@ -1,17 +1,7 @@
-/*
- *  Energy Trace Example
- *
- *  Created on: Jan 30, 2023
- *      Author: Russell Trafford
- *      Version: 1.0
- *
- *      This example will show you the power consumption and energy consumption differences between polling and using an interrupt to turn on a processor.
- *
- *      Your task for this part of the lab is to capture two screenshots of the code running in Energy Trace, one with software polling, one with interrupts.
- *
- *      You will need to update the README for this part with the screenshots.
  */
-
+//*  Created on: Feb 2, 2023
+//*  *      Author: Matthew Currey
+//*      Version: 1.0
 #include <msp430.h>
 
 
@@ -22,9 +12,9 @@ int main(){
 
     WDTCTL = WDTPW | WDTHOLD;   // stop watchdog timer
 
-    //runCodeWithSoftwarePolling();
+    runCodeWithSoftwarePolling();
 
-    runCodeWithInterrupts();
+    //runCodeWithInterrupts();
 
     return 0;
 }
