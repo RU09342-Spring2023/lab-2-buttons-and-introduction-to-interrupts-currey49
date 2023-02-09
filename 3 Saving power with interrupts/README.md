@@ -83,4 +83,4 @@ Then load up Energy Trace and perform the similar capture of Power with the LED 
  some reasoning as to Questions 1 and 2 in the Power consumption of the Interrupts Section.**
 
 1.)In the polling example the CPU stays on and is running 1MHz is constantly being used to check if the button is being pressed. In the interrupt example the CPU turns off and it saving power.
-2.)
+2.) We programed the interrupt example to increase in power when the button is pressed. The CPU is off and the power is low when the button isn't pressed, but when the button is pressed, the interrupt vector is fired and the CPU wakes up, runs the code in the interrupt routine, and the we tell the CPU to kick back on. It will then resume the code in the While() loop until we hit that LPM3_bits line, and then it sleeps again. In any running code when you press the button it will increase the power at least a little because a bit will be switching from 0 to 1.
