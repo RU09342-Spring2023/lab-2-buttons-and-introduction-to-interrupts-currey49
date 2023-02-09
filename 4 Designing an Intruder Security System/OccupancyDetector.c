@@ -1,81 +1,128 @@
 /*
- *  Occupancy Detector
- *
- *  Created on: Feb 6, 2023
-    Author: Matthew Currey
-       Version: 1.0
-      */
- 
+* OccupancyDetector.c
+*
+*  Created on: Feb 9, 2023
+*      Author: Matthew Currey
+*/
+
 #include <msp430.h>
-#include <time.h>
+#define GREENBLINK_STATE 0
+#define REDBLINK_STATE 1
+#define REDSOLID_STATE 2
 
-int main(void)
-{
-    WDTCTL = WDTPW | WDTHOLD; //Stops the Watchdog Timer
+// Put some initialization here
 
+char state = GREENBLINK_STATE;
 
-
-    P1OUT &= ~BIT0; //Turns off the Red LED
-    P1DIR |= BIT0; // Turn on P1DIR
-
-    P6DIR |= BIT6; // Turns on the Green LED
-    P6OUT &= ~BIT6; // Turns off the Green LED
-
-
-     P4DIR &= ~BIT1; //Turns on P4DIR
-     P4REN |= BIT1;  //Turns on P4REN
-     P4OUT |= BIT1;  //Turns on P4OUT
-
-     P2DIR &= ~BIT3; //Turns on P2DIR
-     P2REN |= BIT3;  //Turns on P2REN
-     P2OUT |= BIT3;  //Turns on P2OUT
+int main(){
+    WDTCTL = WDTPW | WDTHOLD;
+    P4OUT |= BIT1;
+    P4DIR &= ~BIT1;
+    P4REN |= BIT1;
 
 
-     PM5CTL0 &= ~LOCKLPM5;
+    P2OUT |= BIT3;
+    P2DIR &= ~BIT3;
+    P2REN |= BIT3;
 
-     unsigned int totaltime;
 
-     totaltime=0; // resets the timer
+    P6OUT &= ~BIT6;
+    P6DIR |= BIT6;
+    P1OUT &= ~BIT0;
+    P1DIR |= BIT0;
+
+    PM5CTL0 &= ~LOCKLPM5;
+
+
+
+    char cnt = 0;
+
+
+
      while(1)
-     {
+        {
 
 
-         if  (((P4IN & BIT1)==0X002) & (totaltime<0x14))  // If the left button is not pressed and timer is less then 10 seconds
-             {
-                 P1OUT &= ~BIT0;            // Turns off red led
-                 P6OUT ^= BIT6;             // Makes the Green LED Blink
-                 _delay_cycles(3000000);     // 3 secound delay
-                 totaltime=0; // resets the timer
-             }
+          switch (state) {
+            case GREENBLINK_STATE:
+                //DEFAULT STATE, BLINKS GREEN
+            {
+              cnt = 0;
+
+             // __delay_cycles(10000);
+              int x = 0;
+              for(x = 0; x < 1000; x++){
+                  P1OUT &= ~BIT0;
+                  P6OUT ^= BIT6;// Blink the Green LED
+                  x++;
+
+                  if(!(P2IN & BIT3)){
+                      state = REDBLINK_STATE;
+                      break;
+                  }
+                  else
+                  {
+                    _delay_cycles(3000000);     // 3 secound delay
+                  }
+              }
+
+              break;
+              // If something happens, you can move into the REDBLINK_STATE
+              // state = REDBLINK_STATE
+            }
+            case REDBLINK_STATE://IF BUTTON IS HELD IT BLINKS RED
+            {
 
 
 
+              if(!(P2IN & BIT3)){
+             // IF BUTTON IS HELD
+              int x = 0;
+              for(x = 0; x < 1000; x++){
+                  if(!(P2IN & BIT3)){ //IF BUTTON IS HELD
+                  P6OUT &= ~BIT6;
+                  P1OUT ^= BIT0;
+                  x++;
+                  _delay_cycles(3000000);     // 3 second delay
 
-         if (((P4IN & BIT1)==0X00) & (totaltime<0x14)) // If the Left Button is pressed and timer is less then 10 seconds
-         {
+                  cnt = cnt + 1;
+                  if (cnt >= 5){
+                      state = REDSOLID_STATE;
+                      break;
+                  }
+                  }
+                  else
+                  {
+                      //IF BUTTON IS LET GO
+                      state = GREENBLINK_STATE;
+                      break;
+                  }
+              }
+              }
+              else
+              {
+                  //IF BUTTON IS LET GO
+                  state = GREENBLINK_STATE;
+                  break;
+              }
 
-             P6OUT &= ~BIT6;          // Turns off green led
-             P1OUT ^= BIT0;           // Makes the RED LED Blink
-            _delay_cycles(500000);    // .5ms delay
-            totaltime= totaltime+ 1;  // counts up the timer
-         }
+              break;
 
+            }
+            case REDSOLID_STATE: //AFTER 10 seconds it's solid red
+            {
 
-         if ((totaltime==0X14)) // if timer = 10 secounds
+                if (!(P4IN & BIT1)){
+                    state = GREENBLINK_STATE;
+                    break;
+                }
+               //__delay_cycles(100000);
+                    P6OUT &= ~BIT6;
+                    P1OUT |= BIT0;
 
-          {
-              P1OUT ^= BIT0;  // Makes the RED LED solid
+                break;
+
+            }
           }
-
-         if((((P2IN & BIT3)==0X00))) //If the right button is pressed
-          {
-             totaltime=0; // resets the timer
-          }
-
-     }
+      }
 }
-
-
-
-
-
