@@ -51,3 +51,18 @@ while(1)
 
 ## Submission
 There is a sample file in this folder you will need to import into your Code Composer and work on. You will need to submit that file, documented well, and a README.md file (you can replace this one) with the documentation that tells someone about what the code is, what it does, how it works etc. For an audience for your README, imagine you at the beginning of the lab, looking for code which does, well, this. 
+
+My code is split into three different cases. THE GREENBLINK_STATE, REDBLINK_STATE, and REDSOLID_STATE.
+
+GREENBLINK_STATE = Armed State
+
+This is the default state that runs a loop blinking the green LED every 3 seconds. In this loop there is an if statement waiting for Button P2.3 to be pressed. If P2.3 is pressed the state changes to REDBLINK_STATE and there is a break in the loop, sending the code to the REDBLINK_STATE case.
+
+REDBLINK_STATE = Warning State
+
+In this state there is a loop that blinks the red light every 3 seconds. In this loop there is an if statement making sure the Button P2.3 stays pressed. If the button is let go and not pressed then the state goes back to the GREENBLINK_STATE. As long as the button stays pressed a counter in the loop counts every time the red led blinks. After 5 blinks of the LED, it has been 15 seconds and the state changes to the REDSOLID_STATE.
+
+REDSOLID_STATE = Alert State
+
+This is the last state where the red LED stops blinking and stays on. Once in this state there is only one way to get out. When the button P4.1 is pressed, it acts as a reset button and the state is returned to the GREENBLINK_STATE.
+
