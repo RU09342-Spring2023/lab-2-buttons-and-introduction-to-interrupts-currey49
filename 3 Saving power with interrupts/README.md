@@ -80,6 +80,23 @@ Then load up Energy Trace and perform the similar capture of Power with the LED 
 ![SoftwarePolling](https://user-images.githubusercontent.com/123091601/217673710-d9224f0a-c17d-4869-a470-cbbf0bf36f5f.png)
 ![Interrupt](https://user-images.githubusercontent.com/123091601/217673766-5e36b5dc-b3dc-4ba8-b830-345d355ac8e1.png)
 
+Software Polling Example
+![Screenshot_20230209_015643](https://user-images.githubusercontent.com/123091601/217912640-2a1e2624-45b4-4cbd-a07d-47c4a4a5276a.png)
+![Screenshot_20230209_015752](https://user-images.githubusercontent.com/123091601/217912741-435aaa42-356b-4007-8c82-77d0026ff2db.png)
+
+The huge dips occur when the button is pressed and the LED is turned off.
+
+Interrupt Example
+![Screenshot_20230209_020132](https://user-images.githubusercontent.com/123091601/217912907-83fcac96-8012-49e8-98e7-c7d6f54b4cdd.png)
+
+The two big increases in slope occur when the button is pressed and the LED is turned on.
+
+
+Keep in mind 1mJ = 1000 uJ. So, the Software Polling Example consumes more power then the interrupt example.
+
+
+
+
  some reasoning as to Questions 1 and 2 in the Power consumption of the Interrupts Section.**
 
 1.)In the polling example the CPU stays on and is running 1MHz is constantly being used to check if the button is being pressed. In the interrupt example the CPU turns off and it saving power.
