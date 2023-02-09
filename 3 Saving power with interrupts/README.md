@@ -76,13 +76,13 @@ Then load up Energy Trace and perform the similar capture of Power with the LED 
 
 
 # Screenshots and Answers to Questions
-**Replace this section with your screenshots of Energy Trace and provide
+**Replace this section with your screenshots of Energy Trace and provide;
 
 Software Polling Example
 ![Screenshot_20230209_015643](https://user-images.githubusercontent.com/123091601/217912640-2a1e2624-45b4-4cbd-a07d-47c4a4a5276a.png)
 ![Screenshot_20230209_015752](https://user-images.githubusercontent.com/123091601/217912741-435aaa42-356b-4007-8c82-77d0026ff2db.png)
 
-The huge dips occur when the button is pressed and the LED is turned off.
+The huge dips occur when the button is pressed and the LED is turned off.;
 
 Interrupt Example
 ![Screenshot_20230209_020132](https://user-images.githubusercontent.com/123091601/217912907-83fcac96-8012-49e8-98e7-c7d6f54b4cdd.png)
@@ -97,5 +97,6 @@ Keep in mind 1mJ = 1000 uJ. So, the Software Polling Example consumes more power
 
  some reasoning as to Questions 1 and 2 in the Power consumption of the Interrupts Section.**
 
-1.)In the polling example the CPU stays on and is running 1MHz is constantly being used to check if the button is being pressed. In the interrupt example the CPU turns off and it saving power.
+1.)In the polling example the CPU stays on and is running 1MHz is constantly being used to check if the button is being pressed. In the interrupt example the CPU turns off and it saving power.;
+
 2.) We programed the interrupt example to increase in power when the button is pressed. The CPU is off and the power is low when the button isn't pressed, but when the button is pressed, the interrupt vector is fired and the CPU wakes up, runs the code in the interrupt routine, and the we tell the CPU to kick back on. It will then resume the code in the While() loop until we hit that LPM3_bits line, and then it sleeps again. In any running code when you press the button it will increase the power at least a little because a bit will be switching from 0 to 1.
