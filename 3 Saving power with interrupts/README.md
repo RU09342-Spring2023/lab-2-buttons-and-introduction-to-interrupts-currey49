@@ -77,8 +77,6 @@ Then load up Energy Trace and perform the similar capture of Power with the LED 
 
 # Screenshots and Answers to Questions
 **Replace this section with your screenshots of Energy Trace and provide
-![SoftwarePolling](https://user-images.githubusercontent.com/123091601/217673710-d9224f0a-c17d-4869-a470-cbbf0bf36f5f.png)
-![Interrupt](https://user-images.githubusercontent.com/123091601/217673766-5e36b5dc-b3dc-4ba8-b830-345d355ac8e1.png)
 
 Software Polling Example
 ![Screenshot_20230209_015643](https://user-images.githubusercontent.com/123091601/217912640-2a1e2624-45b4-4cbd-a07d-47c4a4a5276a.png)
