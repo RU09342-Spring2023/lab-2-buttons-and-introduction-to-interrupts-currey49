@@ -82,5 +82,5 @@ Then load up Energy Trace and perform the similar capture of Power with the LED 
 
  some reasoning as to Questions 1 and 2 in the Power consumption of the Interrupts Section.**
 
-1.)
+1.)In the polling example the CPU stays on and is running 1MHz is constantly being used to check if the button is being pressed. In the interrupt example the CPU turns off and it saving power.
 2.)
